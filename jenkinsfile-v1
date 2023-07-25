@@ -1,0 +1,52 @@
+pipeline{
+    agent any
+    tools{
+        maven 'M3'
+    }
+    environment{
+        CI= true
+        ARTIFACTORY_ACCESS_TOKEN = credentials('jfrog-token')
+        JFROG_PASSWORD = credentials('jf')
+    }
+    stages{
+        stage('SCM'){
+            steps{
+                 git 'https://github.com/anand40090/springboot-maven-course-micro-svc.git'
+            }
+        }
+        stage ('Artifactory Configuration'){
+            steps{
+                rtServer (
+                    id: "jf",
+                    url: "http://20.193.130.71:8082",
+                    credentialsId: "jfrog-token"
+                    )
+                rtMavenResolver (
+                    id: 'maven-resolver',
+                    serverId: '20.197.0.228',
+                    releaseRepo: 'libs-release',
+                    snapshotRepo: 'libs-snapshot'
+                )
+                rtMavenDeployer (
+                    id: 'MavenDeployer',
+                    serverId: '20.193.130.71',
+                    releaseRepo: 'libs-release-local',
+                    snapshotRepo: 'libs-snapshot-local',
+                    threads: 6,
+                    properties: ['BinaryPurpose=Technical-BlogPost', 'Team=DevOps-Acceleration']
+                )
+            }
+        }
+        stage('Build Maven Project') {
+            steps {
+                rtMavenRun (
+                    tool: 'M3',
+                    pom: 'pom.xml',
+                    goals: '-U clean install',
+                    deployerId: "maven-deployer",
+                    resolverId: "maven-resolver"
+                )
+            }
+        }
+    }
+}
