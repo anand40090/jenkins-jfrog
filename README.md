@@ -26,7 +26,11 @@ Build the code and store the antifactory on Jfrog artifactory
 ```
 https://jfrog.com/getcli/
 ```
-***5. Build the Jenkins Pipeline to push Artifacts on Jfrog -***
+***5. Configure Jfrog in jenkins configuration -***
+
+![image](https://github.com/anand40090/jenkins-jfrog/assets/32446706/e04ae0ae-36ee-4d6e-be97-ac3c806ccd5c)
+
+***6. Build the Jenkins Pipeline to push Artifacts on Jfrog -***
 
 
 
