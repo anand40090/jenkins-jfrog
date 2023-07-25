@@ -7,6 +7,7 @@ Build the code and store the antifactory on Jfrog artifactory
 1. [Integrate Artifactory with Jenkins | How to integrate Artifactory and Jenkins ](https://www.youtube.com/watch?v=k3_byI8Eql4&t=70s)
 1. [How to Configure Artifactory in Jenkins - ****Very IMP****](https://www.youtube.com/watch?v=fj_TD9pufFM)
 2. [Jenkins Pipeline Example](https://jfrog.com/blog/ci-cd-side-by-side-jenkins-and-jfrog-pipelines/)
+1. [IMP Blog](https://medium.com/@nanditasahu031/jenkins-pipeline-jfrog-artifactory-and-jenkins-integration-4fed3fc8d556)
 
 ### Steps - 
 ***1. Install Jfrog Artifactory plugins in jenkins -*** 
