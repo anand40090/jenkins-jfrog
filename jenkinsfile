@@ -1,0 +1,44 @@
+pipeline{
+    agent any
+    tools{
+        maven 'M3'
+    }
+    environment{
+        CI= true
+        ARTIFACTORY_ACCESS_TOKEN= credentials('jfrog-token')
+    }
+    stages{
+        stage('SCM'){
+            steps{
+                 git 'https://github.com/anand40090/springboot-maven-course-micro-svc.git'
+            }
+        }
+        stage('Build'){
+            steps{
+                script{
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage ('Artifactory Configuration'){
+            steps{
+                rtServer (
+                    id: "jf",
+                    url: "http://20.193.130.71:8082",
+                    credentialsId: "jfrog-token"
+                    )
+            }
+        }
+        stage('Upload to artifactory'){
+            agent{
+                docker{
+                    image 'releases-docker.jfrog.io/jfrog/jfrog-cli-v2:2.44.0'
+                    reuseNode true
+                }
+            }
+            steps{
+                sh 'jfrog rt upload --url http://20.193.130.71:8082 --access-token{jfrog-token} target/springboot-maven-course-micro-svc-0.0.1-SNAPSHOT.jar java-web-app/'
+            }
+        }
+    }
+}
