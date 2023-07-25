@@ -5,7 +5,8 @@ pipeline{
     }
     environment{
         CI= true
-        ARTIFACTORY_ACCESS_TOKEN= credentials('jfrog-token')
+        ARTIFACTORY_ACCESS_TOKEN = credentials('ARTIFACTORY_ACCESS_TOKEN')
+        JFROG_PASSWORD = credentials('jfrog-password')
     }
     stages{
         stage('SCM'){
@@ -13,31 +14,16 @@ pipeline{
                  git 'https://github.com/anand40090/springboot-maven-course-micro-svc.git'
             }
         }
-        stage('Build'){
+        stage('Build Job'){
             steps{
-                script{
-                    sh 'mvn clean install'
-                }
+                sh 'mvn clean install'
             }
         }
-        stage ('Artifactory Configuration'){
+        stage('Upload Binary'){
             steps{
-                rtServer (
-                    id: "jf",
-                    url: "http://20.193.130.71:8082",
-                    credentialsId: "jfrog-token"
-                    )
-            }
-        }
-        stage('Upload to artifactory'){
-            agent{
-                docker{
-                    image 'releases-docker.jfrog.io/jfrog/jfrog-cli-v2:2.44.0'
-                    reuseNode true
-                }
-            }
-            steps{
-                sh 'jfrog rt upload --url http://20.193.130.71:8082 --access-token{jfrog-token} target/springboot-maven-course-micro-svc-0.0.1-SNAPSHOT.jar java-web-app/'
+               script{ 
+                   sh 'jf rt upload --url http://20.193.130.71:8082/artifactory/ --access-token ${ARTIFACTORY_ACCESS_TOKEN}  /var/lib/jenkins/.m2/repository/com/cloudtechmasters/springboot-maven-course-micro-svc/0.0.1-SNAPSHOT/springboot-maven-course-micro-svc-0.0.1-SNAPSHOT.jar java-web-app/'
+               }
             }
         }
     }
